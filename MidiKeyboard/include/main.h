@@ -9,11 +9,15 @@
 
 #include <stdint.h>
 
-#include "my_uart.h"
+#include "uart.h"
 #include "gpio.h"
+#include "midi.h"
 
-
+/* Namespace includes */
 using z_lib::Gpio;
+using z_lib::UART;
 
+/* Function protypes*/
+void midi_send(MIDI_Packet *packet);
 
 #endif /*_MAIN_H  */
