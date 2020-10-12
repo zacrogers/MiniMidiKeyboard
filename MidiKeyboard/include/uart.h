@@ -3,6 +3,7 @@
 
 #include <avr/io.h>
 #include <stdint.h>
+#include <string>
 
 namespace z_lib
 {	
@@ -12,6 +13,7 @@ namespace z_lib
             UART(int baudrate);
             void putc(unsigned char c);
             void print(char *s);
+            void println(char *s);
     };
 }
 

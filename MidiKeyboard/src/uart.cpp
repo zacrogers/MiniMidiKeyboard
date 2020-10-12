@@ -40,4 +40,15 @@ namespace z_lib
             s++;
         }
     }
+
+    void UART::println(char *s)
+    {
+        while(*s)
+        {
+            UART::putc(*s);
+            s++;
+        }
+        UART::putc("\n");
+    }
+
 }
