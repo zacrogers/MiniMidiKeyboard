@@ -28,89 +28,66 @@ int prev_note_state = 0;
 int btn_val[8] = {0,0,0,0,0,0,0,0};
 int prev_btn_val[8] = {0,0,0,0,0,0,0,0};
 
-void send(int ctrl, int note)
-{
-	serial.putc((unsigned char)ctrl);
-	serial.putc((unsigned char)note);
-	serial.putc((unsigned char)100);
-}
+int sequence[8] = {69, 71, 72, 74, 76, 77, 79, 80};
 
 int main(void)
 {
-	// char test_str[] = "Hello\n";
-	// midi_pack.channel = 0;
-	// midi_pack.note = 90;
 	midi_pack.velocity = DEFAULT_VELOCITY;
 	midi_pack.control = MIDI_NOTE_ON;
-	
-	int sequence[8] = {69, 71, 72, 74, 76, 77, 79, 80};
 
-	// _delay_ms(5000);
-
+	_delay_ms(2000);
 	while(1)
 	{
-		for(uint8_t i = 0; i < 4; ++i)
-		{
-			btn_val[i] = btns[i].read();
-
-			if(btn_val[i] != prev_btn_val[i])
-			{
-				if(btn_val[i])
-				{
-					midi_pack.note = i + BASE_NOTE;
-					midi_pack.control = MIDI_NOTE_ON;
-					// serial.println("Pressed");
-					midi_send(&midi_pack);
-					_delay_ms(200);	
-				}
-				else
-				{
-					midi_pack.note = i + BASE_NOTE;
-					midi_pack.control = MIDI_NOTE_OFF;
-					// serial.println("Pressed");
-					midi_send(&midi_pack);
-					_delay_ms(200);						
-				}
-			}
-			prev_btn_val[i] = btn_val [i];
-
-		}
-
-		// for(int chan = 0; chan< 8; ++chan)
-		// {
-		// 	/* Set mux channel */
-		// 	for(uint8_t s = 0; s < MUX_SEL_N; ++s)
-		// 	{
-		// 		if(chan & (0x01 << s))
-		// 		{
-		// 			mux_sel[s].set();
-		// 		}
-		// 		else
-		// 		{
-		// 			mux_sel[s].clear();
-		// 		}
-		// 	}
-
-		// 	btn_val[chan] = mux_read[0].read();
-
-		// 	if(btn_val[chan] == 0 && prev_btn_val[chan] == 1)
-		// 	{
-		// 		// char* st = "HI\n";
-		// 		serial.println(chan);
-		// 	}
-		// 	if(btn_val[chan] == 1 && prev_btn_val[chan] == 0)
-		// 	{
-		// 		// char* st = "LO\n";
-		// 		serial.println(chan);
-		// 	}
-
-		// 	prev_btn_val[chan] = btn_val[chan];
-		// }
-
-
+		// poll_buttons();
+		play_loop();
 	}
 
 	return 0;
+}
+
+void poll_buttons()
+{
+	for(uint8_t i = 0; i < 4; ++i)
+	{
+		btn_val[i] = btns[i].read();
+
+		if(btn_val[i] != prev_btn_val[i])
+		{
+			if(btn_val[i])
+			{
+				midi_pack.note = i + BASE_NOTE;
+				midi_pack.control = MIDI_NOTE_ON;
+				midi_send(&midi_pack);
+				_delay_ms(200);	
+			}
+			else
+			{
+				midi_pack.note = i + BASE_NOTE;
+				midi_pack.control = MIDI_NOTE_OFF;
+				midi_send(&midi_pack);
+				_delay_ms(200);						
+			}
+		}
+		prev_btn_val[i] = btn_val [i];
+
+	}	
+}
+
+void play_loop()
+{
+	for(int i = 0; i < 8; ++i)
+	{
+		midi_pack.note = sequence[i];
+		midi_pack.control = MIDI_NOTE_ON;
+		midi_send(&midi_pack);
+		_delay_ms(1000);
+
+		midi_pack.note = sequence[i];
+		midi_pack.control = MIDI_NOTE_OFF;
+		midi_send(&midi_pack);
+		_delay_ms(1000);	
+	}
+
 }
 
 void midi_send(MIDI_Packet *packet)
@@ -118,9 +95,6 @@ void midi_send(MIDI_Packet *packet)
 	serial.putc((unsigned char)packet->control);
 	serial.putc((unsigned char)packet->note);
 	serial.putc((unsigned char)packet->velocity);
-// #ifdef DEBUG
-// 	serial.putc("\n");
-// #endif
 }
 
 // MuxState read_mux(uint8_t chan)

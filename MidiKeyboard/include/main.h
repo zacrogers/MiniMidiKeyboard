@@ -26,6 +26,7 @@
 using z_lib::Gpio;
 using z_lib::UART;
 
+typedef struct{Gpio* sel[3], Gpio* input;} MUX;
 typedef struct{ uint8_t a, b, chan; }MuxState;
 
 /* Maps mux channels to physical layout of buttons */
@@ -35,7 +36,8 @@ const uint8_t key_to_note_map[N_NOTES] = {6, 5, 4, 3, 0, 1, 2, 7};
 /* Function protypes*/
 void set_mux(uint8_t chan);
 
-
+void poll_buttons();
+void play_loop();
 void     midi_send(MIDI_Packet *packet); /* Send midi packet over serial */
 MuxState read_mux(uint8_t chan);         /* Set both muxes to given channel and read both */
 bool     btns_pressed(MuxState state);
