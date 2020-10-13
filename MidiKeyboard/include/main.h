@@ -6,7 +6,8 @@
 #include <util/delay.h>
 
 #include <stdint.h>
-#include <string>
+#include <stdlib.h>
+// #include <string>
 
 #include "uart.h"
 #include "gpio.h"
@@ -19,7 +20,7 @@
 #define MUX_READ_N       2
 #define DEFAULT_VELOCITY 127
 #define N_NOTES          12
-#define BASE_NOTE        65 // F4
+#define BASE_NOTE        (uint8_t)65 // F4
 
 /* Namespace includes */
 using z_lib::Gpio;
@@ -32,8 +33,12 @@ const uint8_t note_to_key_map[N_NOTES] = {5, 6, 7, 4, 2, 1, 0, 3};
 const uint8_t key_to_note_map[N_NOTES] = {6, 5, 4, 3, 0, 1, 2, 7};
 
 /* Function protypes*/
+void set_mux(uint8_t chan);
+
+
 void     midi_send(MIDI_Packet *packet); /* Send midi packet over serial */
 MuxState read_mux(uint8_t chan);         /* Set both muxes to given channel and read both */
+bool     btns_pressed(MuxState state);
 uint8_t  mux_to_key(MuxState mux);       /* Get the key pressed (returns val between 0 & 15 */
 uint8_t  key_to_note(uint8_t key);       /* Get the midi note from the key pressed */
 uint8_t  note_to_key(uint8_t note);      /* Get the key pressed from the midi note*/

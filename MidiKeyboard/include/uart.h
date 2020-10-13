@@ -3,7 +3,7 @@
 
 #include <avr/io.h>
 #include <stdint.h>
-#include <string>
+// #include <string>
 
 namespace z_lib
 {	
